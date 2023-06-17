@@ -1,7 +1,6 @@
 package com.mdmx.myalarmdotcomapp.view.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.mdmx.myalarmdotcomapp.MyApp.Companion.getSystemData
+import com.mdmx.myalarmdotcomapp.model.MyApp.Companion.getSystemData
 import com.mdmx.myalarmdotcomapp.data.DrawerEvents
 import com.mdmx.myalarmdotcomapp.data.systemdata.SystemData
 import com.mdmx.myalarmdotcomapp.view.screen.components.DrawerMenu
@@ -42,7 +41,7 @@ fun Home(navController: NavHostController) {
     var garageDoorId by rememberSaveable { mutableStateOf("") }
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    var systemData: SystemData? = null
+    var systemData: SystemData?
 
     Thread() {
         systemData = getSystemData()
@@ -80,60 +79,6 @@ fun Home(navController: NavHostController) {
                     GarageDoor(garageDoorId)
                 }
 
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
-                Card(
-                    border = BorderStroke(1.dp, Color.Gray),
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                ) {
-                    Text(text = text)
-                }
                 Card(
                     border = BorderStroke(1.dp, Color.Gray),
                     modifier = Modifier

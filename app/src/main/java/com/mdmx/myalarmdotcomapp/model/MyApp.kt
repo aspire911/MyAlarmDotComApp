@@ -1,8 +1,9 @@
-package com.mdmx.myalarmdotcomapp
+package com.mdmx.myalarmdotcomapp.model
 
 import android.app.Application
 import android.util.Log
 import com.google.gson.Gson
+import com.mdmx.myalarmdotcomapp.Constant
 import com.mdmx.myalarmdotcomapp.data.garagestate.GarageState
 import com.mdmx.myalarmdotcomapp.data.systemdata.SystemData
 import com.mdmx.myalarmdotcomapp.data.systemid.AvailableSystemItem

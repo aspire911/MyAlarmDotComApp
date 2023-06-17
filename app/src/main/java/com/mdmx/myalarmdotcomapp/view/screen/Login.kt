@@ -45,7 +45,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.mdmx.myalarmdotcomapp.MyApp.Companion.login
+import com.mdmx.myalarmdotcomapp.model.MyApp.Companion.login
 import com.mdmx.myalarmdotcomapp.R
 import com.mdmx.myalarmdotcomapp.view.Routes
 
