@@ -1,0 +1,3 @@
+package com.mdmx.myalarmdotcomapp.data.garagestate
+
+class AssociatedCameraDeviceIds
