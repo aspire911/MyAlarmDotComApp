@@ -86,7 +86,7 @@ fun Home(navController: NavHostController) {
                         .fillMaxWidth()
                         .height(100.dp)
                 ) {
-                    Text(text = text)
+
                 }
             }
         }

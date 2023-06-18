@@ -17,15 +17,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,27 +46,27 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.mdmx.myalarmdotcomapp.model.MyApp.Companion.login
 import com.mdmx.myalarmdotcomapp.R
 import com.mdmx.myalarmdotcomapp.view.Routes
+import com.mdmx.myalarmdotcomapp.viewmodel.MainViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(navController: NavHostController) {
+fun LoginPage(
+    navController: NavHostController,
+    viewModel: MainViewModel
+) {
 
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var login by rememberSaveable { mutableStateOf("") }
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
-    var isLogin by rememberSaveable { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
 
-    Box {
-        if (isLogin) {
-            Toast.makeText(context, "LOGIN OK", Toast.LENGTH_LONG).show()
-            navController.navigate(Routes.Home.route)
-        }
+    Box(contentAlignment = Alignment.Center) {
+        if (isLoading) CircularProgressIndicator()
+
         Column(
             Modifier
                 .padding(16.dp)
@@ -139,23 +140,13 @@ fun LoginPage(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    if (login.isBlank() || password.isBlank())
-                        Toast.makeText(context, "INPUT LOGIN AND PASSWORD", Toast.LENGTH_LONG)
-                            .show()
-                    else {
-                        val toast = Toast.makeText(
-                            context,
-                            "INCORRECT LOGIN OR PASSWORD",
-                            Toast.LENGTH_LONG
-                        )
-                        Thread {
-                            isLogin = login(login, password)
-                            if (!isLogin) toast.show()
-                        }.start()
 
-                    }
+
+                    viewModel.login(login, password)
+
+
                 }, Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
                 shape = RoundedCornerShape(2.dp)
             ) {
                 Text(text = "LOGIN")
@@ -166,7 +157,7 @@ fun LoginPage(navController: NavHostController) {
                         onClick = { /*TODO*/
                         },
                         Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
                         shape = RoundedCornerShape(2.dp)
                     ) {
                         Text(text = "TAKE A TOUR", color = Color.Black)
@@ -176,7 +167,6 @@ fun LoginPage(navController: NavHostController) {
                         onClick = {
                             uriHandler.openUri("https://www.alarm.com/get_started/finddealer_wizard.aspx")
                         })
-                    //https://www.alarm.com/get_started/finddealer_wizard.aspx
                     Spacer(Modifier.height(5.dp))
                     Image(
                         painter = painterResource(id = R.drawable.bottom_logo),
@@ -187,6 +177,38 @@ fun LoginPage(navController: NavHostController) {
                         alignment = Alignment.Center
                     )
                 }
+
+            }
+
+        }
+    }
+    val toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
+    val toastLoading = Toast.makeText(context, "LOADING...", Toast.LENGTH_SHORT)
+
+    LaunchedEffect(Unit) {
+        viewModel.result.collect { event ->
+            when (event) {
+
+                is MainViewModel.LoginEvent.Success -> {
+                    isLoading = false
+                    toast.setText(event.resultText)
+                    toast.show()
+                    navController.navigate(Routes.Home.route)
+
+                }
+
+                is MainViewModel.LoginEvent.Failure -> {
+                    isLoading = false
+                    toast.setText(event.errorText)
+                    toast.show()
+                }
+
+                is MainViewModel.LoginEvent.Loading -> {
+                    isLoading = true
+                    toastLoading.show()
+                }
+
+                else -> Unit
 
             }
 
