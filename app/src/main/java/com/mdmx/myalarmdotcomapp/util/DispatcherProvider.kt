@@ -1,4 +1,4 @@
-package com.mdmx.currencyconvertor.util
+package com.mdmx.myalarmdotcomapp.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 

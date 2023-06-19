@@ -1,6 +1,6 @@
 package com.mdmx.myalarmdotcomapp.di
 
-import com.mdmx.currencyconvertor.util.DispatcherProvider
+import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
 import com.mdmx.myalarmdotcomapp.model.DefaultMainRepository
 import com.mdmx.myalarmdotcomapp.model.MainRepository
 import dagger.Module

@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import com.mdmx.myalarmdotcomapp.ui.theme.Orange
 import kotlinx.coroutines.launch
 
 @Composable
@@ -27,7 +28,7 @@ fun TopBar(title: String, scaffoldState: ScaffoldState) {
                 textAlign = TextAlign.Center
             )
         },
-        backgroundColor = Color(0xFFFF5722),
+        backgroundColor = Orange,
         contentColor = Color.White,
         navigationIcon = {
             IconButton(onClick = {
@@ -45,15 +46,9 @@ fun TopBar(title: String, scaffoldState: ScaffoldState) {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     imageVector = Icons.Sharp.CheckCircle,
-                    contentDescription = "Activities"
+                    contentDescription = "Activity"
                 )
             }
         }
     )
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    TopBar(title = "name")
-//}

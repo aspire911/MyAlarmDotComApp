@@ -20,20 +20,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.mdmx.myalarmdotcomapp.model.MyApp.Companion.getGarageDoorState
 import com.mdmx.myalarmdotcomapp.R
+import com.mdmx.myalarmdotcomapp.viewmodel.HomeViewModel
 
 
 @Composable
-fun GarageDoor(garageDoorId: String) {
+fun GarageDoor(viewModel: HomeViewModel) {
     var imgId by rememberSaveable { mutableIntStateOf(R.drawable.close_garage) }
-    Thread() {
-        val state = getGarageDoorState(garageDoorId)
+
+    viewModel.state.observe(LocalLifecycleOwner.current) { state ->
         imgId = if (state == 3 || state == 1) R.drawable.open_garage else R.drawable.close_garage
-    }.start()
+    }
 
     Card(
         border = BorderStroke(1.dp, Color.Gray),
@@ -49,7 +50,7 @@ fun GarageDoor(garageDoorId: String) {
                     .padding(vertical = 5.dp, horizontal = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "GARAGE DOORS")
+                Text(text = stringResource(R.string.garage_doors))
                 Text(text = ">")
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -62,13 +63,13 @@ fun GarageDoor(garageDoorId: String) {
 
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Column() {
+                Column {
                     Spacer(modifier = Modifier.height(7.dp))
-                    Text(text = "Garage Door")
+                    Text(text = stringResource(R.string.garage_door))
                     if (imgId == R.drawable.open_garage)
-                        Text(text = "OPEN", color = Color.Green)
+                        Text(text = stringResource(R.string.open), color = Color.Green)
                     else
-                        Text(text = "CLOSE", color = Color.Red)
+                        Text(text = stringResource(R.string.close), color = Color.Red)
                 }
 
 
@@ -78,11 +79,3 @@ fun GarageDoor(garageDoorId: String) {
 
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    GarageDoor("")
-}
-
-

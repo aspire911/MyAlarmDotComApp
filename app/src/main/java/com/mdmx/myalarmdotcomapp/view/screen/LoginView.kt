@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,14 +48,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.mdmx.myalarmdotcomapp.R
+import com.mdmx.myalarmdotcomapp.util.Constant.NEWUSER_URL
 import com.mdmx.myalarmdotcomapp.view.Routes
-import com.mdmx.myalarmdotcomapp.viewmodel.MainViewModel
+import com.mdmx.myalarmdotcomapp.viewmodel.LoginViewModel
 
 
 @Composable
 fun LoginPage(
     navController: NavHostController,
-    viewModel: MainViewModel
+    viewModel: LoginViewModel
 ) {
 
     var password by rememberSaveable { mutableStateOf("") }
@@ -87,9 +89,9 @@ fun LoginPage(
                 )
             }
 
-            Text(text = "Login", fontSize = 20.sp)
+            Text(text = stringResource(R.string.login), fontSize = 20.sp)
             Spacer(Modifier.height(10.dp))
-            Text(text = "Username")
+            Text(text = stringResource(R.string.username))
 
             TextField(
                 value = login,
@@ -100,24 +102,23 @@ fun LoginPage(
                 singleLine = true
             )
             Spacer(Modifier.height(10.dp))
-            Text(text = "Password")
+            Text(text = stringResource(R.string.password))
 
             TextField(
                 value = password,
                 onValueChange = { password = it },
-                //label = { Text("Password") },
                 Modifier
                     .fillMaxWidth()
                     .border(1.dp, Color.Black),
                 singleLine = true,
-                // placeholder = { Text("Password") },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
                     val image = if (passwordVisible)
                         ImageVector.vectorResource(id = R.drawable.baseline_visibility_24)
                     else ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
-                    val description = if (passwordVisible) "Hide password" else "Show password"
+                    val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                            R.string.show_password)
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(imageVector = image, description)
@@ -133,9 +134,9 @@ fun LoginPage(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = false, onCheckedChange = {
                     }, Modifier.padding(0.dp))
-                    Text(text = "Keep me logged in")
+                    Text(text = stringResource(R.string.keep_me_logged_in))
                 }
-                Text(text = "Login Help >")
+                Text(text = stringResource(R.string.login_help))
             }
 
             Button(
@@ -149,10 +150,10 @@ fun LoginPage(
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
                 shape = RoundedCornerShape(2.dp)
             ) {
-                Text(text = "LOGIN")
+                Text(text = stringResource(R.string.login1), color = Color.White)
             }
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Button(
                         onClick = { /*TODO*/
                         },
@@ -160,12 +161,12 @@ fun LoginPage(
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
                         shape = RoundedCornerShape(2.dp)
                     ) {
-                        Text(text = "TAKE A TOUR", color = Color.Black)
+                        Text(text = stringResource(R.string.take_a_tour), color = Color.Black)
                     }
                     Spacer(Modifier.height(5.dp))
-                    ClickableText(text = AnnotatedString("Not yet customer? Get system!"),
+                    ClickableText(text = AnnotatedString(stringResource(R.string.not_yet_customer_get_system)),
                         onClick = {
-                            uriHandler.openUri("https://www.alarm.com/get_started/finddealer_wizard.aspx")
+                            uriHandler.openUri(NEWUSER_URL)
                         })
                     Spacer(Modifier.height(5.dp))
                     Image(
@@ -177,35 +178,33 @@ fun LoginPage(
                         alignment = Alignment.Center
                     )
                 }
-
             }
-
         }
     }
     val toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
-    val toastLoading = Toast.makeText(context, "LOADING...", Toast.LENGTH_SHORT)
 
     LaunchedEffect(Unit) {
         viewModel.result.collect { event ->
             when (event) {
 
-                is MainViewModel.LoginEvent.Success -> {
+                is LoginViewModel.LoginEvent.Success -> {
                     isLoading = false
                     toast.setText(event.resultText)
                     toast.show()
-                    navController.navigate(Routes.Home.route)
+                    navController.navigate(Routes.Home.route) {
+                        popUpTo(Routes.Login.route) {inclusive = true}
+                    }
 
                 }
 
-                is MainViewModel.LoginEvent.Failure -> {
+                is LoginViewModel.LoginEvent.Failure -> {
                     isLoading = false
                     toast.setText(event.errorText)
                     toast.show()
                 }
 
-                is MainViewModel.LoginEvent.Loading -> {
+                is LoginViewModel.LoginEvent.Loading -> {
                     isLoading = true
-                    toastLoading.show()
                 }
 
                 else -> Unit

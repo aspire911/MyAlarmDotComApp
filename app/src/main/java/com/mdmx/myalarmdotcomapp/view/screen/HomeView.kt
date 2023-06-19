@@ -23,38 +23,41 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.mdmx.myalarmdotcomapp.model.MyApp.Companion.getSystemData
 import com.mdmx.myalarmdotcomapp.data.DrawerEvents
-import com.mdmx.myalarmdotcomapp.data.systemdata.SystemData
 import com.mdmx.myalarmdotcomapp.view.screen.components.DrawerMenu
 import com.mdmx.myalarmdotcomapp.view.screen.components.GarageDoor
 import com.mdmx.myalarmdotcomapp.view.screen.components.TopBar
+import com.mdmx.myalarmdotcomapp.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Home(navController: NavHostController) {
+fun Home(navController: NavHostController, viewModel: HomeViewModel) {
 
-    var text by rememberSaveable { mutableStateOf("") }
-    var garageDoorId by rememberSaveable { mutableStateOf("") }
+    var title by rememberSaveable { mutableStateOf("") }
+    val garageState = rememberSaveable{ mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    var systemData: SystemData?
 
-    Thread() {
-        systemData = getSystemData()
-        text = systemData!!.data.attributes.description
-        garageDoorId = systemData!!.data.relationships.garageDoors.data[0].id
-    }.start()
+    viewModel.getSystemData()
+
+    viewModel.title.observe(LocalLifecycleOwner.current) {
+        title = it
+    }
+
+    viewModel.state.observe(LocalLifecycleOwner.current) { state ->
+        if (state != 0) garageState.value = true
+    }
 
     Column {
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopBar(text, scaffoldState = scaffoldState) },
+            topBar = { TopBar(title, scaffoldState = scaffoldState) },
             drawerContent = {
-                DrawerMenu(title = text) { event ->
+                DrawerMenu(title = title) { event ->
                     when (event) {
                         is DrawerEvents.OnItemClick -> {
                         }
@@ -72,12 +75,9 @@ fun Home(navController: NavHostController) {
                     .background(Color.LightGray),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(text = title)
 
-                Text(text = text)
-
-                if (garageDoorId != "") {
-                    GarageDoor(garageDoorId)
-                }
+                if (garageState.value) GarageDoor(viewModel)
 
                 Card(
                     border = BorderStroke(1.dp, Color.Gray),
@@ -90,15 +90,5 @@ fun Home(navController: NavHostController) {
                 }
             }
         }
-
-
     }
 }
-
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    Home()
-//}
-//

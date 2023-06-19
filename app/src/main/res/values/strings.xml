@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">MyAlarmDotComApp</string>
+    <string name="garage_doors">GARAGE DOORS</string>
+    <string name="garage_door">Garage Door</string>
+    <string name="open">OPEN</string>
+    <string name="close">CLOSE</string>
+    <string name="garage_doors1">Garage Doors</string>
+    <string name="menu">Menu</string>
+    <string name="activities">Activities</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="keep_me_logged_in">Keep me logged in</string>
+    <string name="login_help"><![CDATA[Login Help >]]></string>
+    <string name="not_yet_customer_get_system">Not yet customer? Get system!</string>
+    <string name="take_a_tour">TAKE A TOUR</string>
+    <string name="login1">LOGIN</string>
+    <string name="error_connection">ERROR CONNECTION</string>
+    <string name="input_login_and_password">Input Login and Password</string>
+    <string name="login_ok">LOGIN OK</string>
+    <string name="error">ERROR!</string>
 </resources>
