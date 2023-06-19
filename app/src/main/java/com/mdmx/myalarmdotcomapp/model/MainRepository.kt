@@ -1,6 +1,8 @@
 package com.mdmx.myalarmdotcomapp.model
 
+import com.mdmx.myalarmdotcomapp.data.garagestate.GarageState
 import com.mdmx.myalarmdotcomapp.data.systemdata.SystemData
+import com.mdmx.myalarmdotcomapp.data.systemid.AvailableSystemItem
 import com.mdmx.myalarmdotcomapp.util.Resource
 import org.jsoup.Connection
 
@@ -9,7 +11,9 @@ interface MainRepository {
 
     suspend fun getJson(url: String): String
 
-    suspend fun getSystemData(): SystemData?
+    suspend fun getAvailableSystemItem(): AvailableSystemItem?
 
-    suspend fun getGarageDoorState(garageDoorId: String): Int
+    suspend fun getSystemData(systemId: String): SystemData?
+
+    suspend fun getGarageDoorData(garageDoorId: String): GarageState?
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mdmx.myalarmdotcomapp.AlarmDotComApplication.Companion.logger
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
 import com.mdmx.myalarmdotcomapp.model.MainRepository
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
@@ -26,20 +25,23 @@ class HomeViewModel @Inject constructor(
 
     fun getSystemData() {
         viewModelScope.launch(dispatchers.io) {
-            val systemData = repository.getSystemData()
-
-            if(systemData != null) {
-                logger.d(systemData.data.attributes.description)
-                _title.postValue(systemData.data.attributes.description)
-                if(systemData.data.relationships.garageDoors.data.isNotEmpty()) {
-                    val garageDoorId = systemData.data.relationships.garageDoors.data[0].id
-                    val garageState = repository.getGarageDoorState(garageDoorId)
-                    _state.postValue(garageState)
+            val availableSystemItem = repository.getAvailableSystemItem()
+            val systemId = availableSystemItem?.data?.get(0)?.id
+            if (systemId != null) {
+                val systemData = repository.getSystemData(systemId)
+                val text = systemData?.data?.attributes?.description
+                val garageDoorId = systemData?.data?.relationships?.garageDoors?.data?.get(0)?.id
+                _title.postValue(text ?: ERROR)
+                if (garageDoorId != null) {
+                    val garageData = repository.getGarageDoorData(garageDoorId)
+                    val garageState = garageData?.data?.attributes?.state
+                    if (garageState != null) {
+                        _state.postValue(garageState)
+                    }
                 }
             } else {
                 _title.postValue(ERROR)
             }
-
         }
     }
 }
