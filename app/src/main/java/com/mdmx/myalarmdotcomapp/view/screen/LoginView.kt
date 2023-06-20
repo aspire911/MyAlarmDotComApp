@@ -143,7 +143,7 @@ fun LoginPage(
                 onClick = {
 
 
-                    viewModel.login(login, password)
+                    viewModel.login(login = login, password = password)
 
 
                 }, Modifier.fillMaxWidth(),

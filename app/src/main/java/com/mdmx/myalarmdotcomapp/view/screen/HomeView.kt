@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.mdmx.myalarmdotcomapp.data.DrawerEvents
+import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
 import com.mdmx.myalarmdotcomapp.view.screen.components.DrawerMenu
 import com.mdmx.myalarmdotcomapp.view.screen.components.GarageDoor
 import com.mdmx.myalarmdotcomapp.view.screen.components.TopBar
@@ -35,21 +35,21 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Home(navController: NavHostController, viewModel: HomeViewModel) {
+fun Home(viewModel: HomeViewModel) {
 
     var title by rememberSaveable { mutableStateOf("") }
     val garageState = rememberSaveable{ mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    viewModel.getSystemData()
+    viewModel.updateSystemData()
 
     viewModel.title.observe(LocalLifecycleOwner.current) {
         title = it
     }
 
     viewModel.state.observe(LocalLifecycleOwner.current) { state ->
-        if (state != 0) garageState.value = true
+        if (state != NO_GARAGE_DOORS) garageState.value = true
     }
 
     Column {

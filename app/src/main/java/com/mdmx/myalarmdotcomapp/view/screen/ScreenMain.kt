@@ -21,7 +21,7 @@ fun ScreenMain(loginViewModel: LoginViewModel, homeViewModel: HomeViewModel) {
         }
 
         composable(Routes.Home.route) {
-            Home(navController = navController, homeViewModel)
+            Home(homeViewModel)
         }
 
     }

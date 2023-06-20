@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.mdmx.myalarmdotcomapp.util.Logger
 import com.mdmx.myalarmdotcomapp.view.screen.ScreenMain
 import com.mdmx.myalarmdotcomapp.viewmodel.HomeViewModel
 import com.mdmx.myalarmdotcomapp.viewmodel.LoginViewModel

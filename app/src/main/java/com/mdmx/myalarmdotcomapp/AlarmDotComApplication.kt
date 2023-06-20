@@ -7,8 +7,8 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class AlarmDotComApplication : Application() {
     companion object {
-        lateinit var cookies: Map<String, String>
-        val logger = Logger(true)
+        lateinit var cookies: Map<String, String> // cookies after login in
+        val logger = Logger(true) // TRUE = logger ON, FALSE = logger OFF
     }
 
 }

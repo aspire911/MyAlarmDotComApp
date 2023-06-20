@@ -3,7 +3,7 @@ package com.mdmx.myalarmdotcomapp.util
 object Constant {
     const val USER_AGENT =
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
-    const val BASE_URL = "https://www.alarm.com"
+
     const val HOME_URL = "https://www.alarm.com/web/system/home"
     const val LOGIN_URL = "https://www.alarm.com/login"
     const val FORMLOGIN_URL = "https://www.alarm.com/web/Default.aspx"
@@ -28,5 +28,8 @@ object Constant {
     const val LOGIN_OK = "LOGIN OK"
     const val ERROR_LOGIN_PASS = "INPUT LOGIN AND PASSWORD"
     const val TAG = "MYLOG"
+    const val NO_GARAGE_DOORS = 0
+    const val GARAGE_DOOR_OPEN3 = 3
+    const val GARAGE_DOOR_OPEN1 = 1
 
 }
