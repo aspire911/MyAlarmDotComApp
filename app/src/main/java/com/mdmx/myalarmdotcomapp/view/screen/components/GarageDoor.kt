@@ -34,7 +34,7 @@ import com.mdmx.myalarmdotcomapp.viewmodel.HomeViewModel
 fun GarageDoor(viewModel: HomeViewModel) {
     var imgId by rememberSaveable { mutableIntStateOf(R.drawable.close_garage) }
 
-    viewModel.state.observe(LocalLifecycleOwner.current) { state ->
+    viewModel.garageDoorState.observe(LocalLifecycleOwner.current) { state ->
         imgId = if (state == GARAGE_DOOR_OPEN3 || state == GARAGE_DOOR_OPEN1) R.drawable.open_garage else R.drawable.close_garage
     }
 
