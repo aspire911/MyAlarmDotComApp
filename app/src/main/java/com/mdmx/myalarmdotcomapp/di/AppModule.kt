@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.google.gson.Gson
 import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
 import com.mdmx.myalarmdotcomapp.model.apirepository.DefaultApiRepository
 import com.mdmx.myalarmdotcomapp.model.sprepository.DefaultSpRepository
 import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.util.Constant.SECURE_PREFS
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +27,11 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideApiRepository(): ApiRepository = DefaultApiRepository()
+    fun provideGson(): Gson = Gson()
+
+    @Singleton
+    @Provides
+    fun provideApiRepository(gson: Gson): ApiRepository = DefaultApiRepository(gson)
 
     @Singleton
     @Provides
@@ -33,7 +39,7 @@ class AppModule {
         val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
         val mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
         return EncryptedSharedPreferences.create(
-            "secure_prefs",
+            SECURE_PREFS,
             mainKeyAlias,
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,

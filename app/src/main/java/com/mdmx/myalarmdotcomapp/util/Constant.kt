@@ -35,6 +35,7 @@ object Constant {
     const val PASSWORD_KEY = "password"
     const val AUTOLOGIN_KEY = "autologin"
     const val EMPTY_STRING = ""
+    const val SECURE_PREFS = "secure_prefs"
     
 
 }

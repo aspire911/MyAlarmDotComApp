@@ -31,10 +31,15 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.io.IOException
+import javax.inject.Inject
 
-class DefaultApiRepository : ApiRepository {
+class DefaultApiRepository @Inject constructor(
 
-    private val gson = Gson()
+    private val gson: Gson
+
+    ) : ApiRepository {
+
+
     override suspend fun login(login: String, password: String): Resource<Connection.Response> {
         var response: Connection.Response? = null
         try {

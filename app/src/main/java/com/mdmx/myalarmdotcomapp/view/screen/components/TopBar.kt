@@ -38,7 +38,7 @@ fun TopBar(viewModel: HomeViewModel, title: String, scaffoldState: ScaffoldState
             )
         }
     }, actions = {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { viewModel.updateSystemData() }) {
             Icon(
                 imageVector = Icons.Sharp.Refresh, contentDescription = "Refresh"
             )
