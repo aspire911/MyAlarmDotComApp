@@ -217,7 +217,6 @@ fun LoginPage(
                     navController.navigate(Routes.Home.route) {
                         popUpTo(Routes.Login.route) { inclusive = true }
                     }
-
                 }
 
                 is LoginViewModel.LoginEvent.Failure -> {
