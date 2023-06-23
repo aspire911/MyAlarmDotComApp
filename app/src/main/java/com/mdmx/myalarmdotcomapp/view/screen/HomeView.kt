@@ -15,18 +15,19 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.mdmx.myalarmdotcomapp.data.DrawerEvents
+import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
+import com.mdmx.myalarmdotcomapp.view.Routes
 import com.mdmx.myalarmdotcomapp.view.screen.components.DrawerMenu
 import com.mdmx.myalarmdotcomapp.view.screen.components.GarageDoor
 import com.mdmx.myalarmdotcomapp.view.screen.components.TopBar
@@ -35,17 +36,26 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Home(viewModel: HomeViewModel) {
+fun Home(
+    navController: NavHostController,
+    viewModel: HomeViewModel
+) {
 
-    var title by rememberSaveable { mutableStateOf("") }
+    val title = rememberSaveable{ mutableStateOf(EMPTY_STRING) }
     val garageState = rememberSaveable{ mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
     viewModel.updateSystemData()
 
+    viewModel.logOut.observe(LocalLifecycleOwner.current) {
+        if(it) navController.navigate(Routes.Login.route) {
+            popUpTo(Routes.Home.route) {inclusive = true}
+        }
+    }
+
     viewModel.title.observe(LocalLifecycleOwner.current) {
-        title = it
+        title.value = it
     }
 
     viewModel.state.observe(LocalLifecycleOwner.current) { state ->
@@ -55,9 +65,9 @@ fun Home(viewModel: HomeViewModel) {
     Column {
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopBar(title, scaffoldState = scaffoldState) },
+            topBar = { TopBar(viewModel, title.value, scaffoldState = scaffoldState) },
             drawerContent = {
-                DrawerMenu(title = title) { event ->
+                DrawerMenu(title = title.value) { event ->
                     when (event) {
                         is DrawerEvents.OnItemClick -> {
                         }
@@ -75,7 +85,7 @@ fun Home(viewModel: HomeViewModel) {
                     .background(Color.LightGray),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = title)
+                Text(text = title.value)
 
                 if (garageState.value) GarageDoor(viewModel)
 

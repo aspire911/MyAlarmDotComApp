@@ -1,10 +1,13 @@
 package com.mdmx.myalarmdotcomapp.testutil
 
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 
+@ExperimentalCoroutinesApi
 class TestDispatcherProvider(
-    val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : DispatcherProvider {
     override val default
         get() = testDispatcher

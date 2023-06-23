@@ -8,6 +8,10 @@ import java.net.URL
 
 class TestResponse(private val key: String, private val value: String) : Connection.Response {
 
+    override fun cookies(): MutableMap<String, String> {
+        return mutableMapOf(key to value)
+    }
+
     override fun url(): URL {
         TODO("Not yet implemented")
     }
@@ -74,10 +78,6 @@ class TestResponse(private val key: String, private val value: String) : Connect
 
     override fun removeCookie(name: String?): Connection.Response {
         TODO("Not yet implemented")
-    }
-
-    override fun cookies(): MutableMap<String, String> {
-        return mutableMapOf(key to value)
     }
 
     override fun statusCode(): Int {

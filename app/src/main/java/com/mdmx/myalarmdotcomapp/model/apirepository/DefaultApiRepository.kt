@@ -1,4 +1,4 @@
-package com.mdmx.myalarmdotcomapp.model
+package com.mdmx.myalarmdotcomapp.model.apirepository
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
@@ -11,6 +11,7 @@ import com.mdmx.myalarmdotcomapp.util.Constant
 import com.mdmx.myalarmdotcomapp.util.Constant.ACCEPT
 import com.mdmx.myalarmdotcomapp.util.Constant.AJAX_KEY_FIELD
 import com.mdmx.myalarmdotcomapp.util.Constant.AJAX_REQUEST
+import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.FORMLOGIN_URL
 import com.mdmx.myalarmdotcomapp.util.Constant.HOME_URL
@@ -31,7 +32,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.io.IOException
 
-class DefaultMainRepository : MainRepository {
+class DefaultApiRepository : ApiRepository {
 
     private val gson = Gson()
     override suspend fun login(login: String, password: String): Resource<Connection.Response> {
@@ -98,10 +99,10 @@ class DefaultMainRepository : MainRepository {
             }
         } catch (e: IOException) {
             logger.d("Request failed ${e.message}")
-            return ""
+            return EMPTY_STRING
         }
         logger.d("Request failed")
-        return ""
+        return EMPTY_STRING
     }
 
     override suspend fun getAvailableSystemItem(): AvailableSystemItem? {

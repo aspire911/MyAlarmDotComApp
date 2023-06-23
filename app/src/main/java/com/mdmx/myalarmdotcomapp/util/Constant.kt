@@ -27,9 +27,14 @@ object Constant {
     const val ERROR = "ERROR"
     const val LOGIN_OK = "LOGIN OK"
     const val ERROR_LOGIN_PASS = "INPUT LOGIN AND PASSWORD"
-    const val TAG = "MYLOG"
+    const val LOGGER_TAG = "MYLOG"
     const val NO_GARAGE_DOORS = 0
     const val GARAGE_DOOR_OPEN3 = 3
     const val GARAGE_DOOR_OPEN1 = 1
+    const val LOGIN_KEY = "login"
+    const val PASSWORD_KEY = "password"
+    const val AUTOLOGIN_KEY = "autologin"
+    const val EMPTY_STRING = ""
+    
 
 }

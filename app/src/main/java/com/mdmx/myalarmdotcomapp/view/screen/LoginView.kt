@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.mdmx.myalarmdotcomapp.R
+import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.NEWUSER_URL
 import com.mdmx.myalarmdotcomapp.view.Routes
 import com.mdmx.myalarmdotcomapp.viewmodel.LoginViewModel
@@ -59,129 +60,141 @@ fun LoginPage(
     viewModel: LoginViewModel
 ) {
 
-    var password by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf(EMPTY_STRING) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    var login by rememberSaveable { mutableStateOf("") }
+    var login by rememberSaveable { mutableStateOf(EMPTY_STRING) }
+    val isChecked = rememberSaveable { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.Center) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (isLoading) CircularProgressIndicator()
-
-        Column(
-            Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
-        ) {
-            Box(
+        viewModel.autoLogin()
+        if (viewModel.autoLogin.value == false) {
+            Column(
                 Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.2f),
-                contentAlignment = Alignment.Center
+                    .padding(16.dp)
+                    .fillMaxSize(),
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "logo",
+                Box(
                     Modifier
-                        .height(100.dp)
-                        .width(200.dp)
-                )
-            }
-
-            Text(text = stringResource(R.string.login), fontSize = 20.sp)
-            Spacer(Modifier.height(10.dp))
-            Text(text = stringResource(R.string.username))
-
-            TextField(
-                value = login,
-                onValueChange = { login = it },
-                Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, color = Color.Black),
-                singleLine = true
-            )
-            Spacer(Modifier.height(10.dp))
-            Text(text = stringResource(R.string.password))
-
-            TextField(
-                value = password,
-                onValueChange = { password = it },
-                Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Color.Black),
-                singleLine = true,
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    val image = if (passwordVisible)
-                        ImageVector.vectorResource(id = R.drawable.baseline_visibility_24)
-                    else ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
-                    val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
-                                            R.string.show_password)
-
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, description)
-                    }
-                }
-            )
-            Spacer(Modifier.height(10.dp))
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = false, onCheckedChange = {
-                    }, Modifier.padding(0.dp))
-                    Text(text = stringResource(R.string.keep_me_logged_in))
-                }
-                Text(text = stringResource(R.string.login_help))
-            }
-
-            Button(
-                onClick = {
-
-
-                    viewModel.login(login = login, password = password)
-
-
-                }, Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
-                shape = RoundedCornerShape(2.dp)
-            ) {
-                Text(text = stringResource(R.string.login1), color = Color.White)
-            }
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Button(
-                        onClick = { /*TODO*/
-                        },
-                        Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
-                        shape = RoundedCornerShape(2.dp)
-                    ) {
-                        Text(text = stringResource(R.string.take_a_tour), color = Color.Black)
-                    }
-                    Spacer(Modifier.height(5.dp))
-                    ClickableText(text = AnnotatedString(stringResource(R.string.not_yet_customer_get_system)),
-                        onClick = {
-                            uriHandler.openUri(NEWUSER_URL)
-                        })
-                    Spacer(Modifier.height(5.dp))
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.2f),
+                    contentAlignment = Alignment.Center
+                ) {
                     Image(
-                        painter = painterResource(id = R.drawable.bottom_logo),
-                        contentDescription = "bottom_logo",
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "logo",
                         Modifier
-                            .height(30.dp)
-                            .fillMaxWidth(),
-                        alignment = Alignment.Center
+                            .height(100.dp)
+                            .width(200.dp)
                     )
+                }
+
+                Text(text = stringResource(R.string.login), fontSize = 20.sp)
+                Spacer(Modifier.height(10.dp))
+                Text(text = stringResource(R.string.username))
+
+                TextField(
+                    value = login,
+                    onValueChange = { login = it },
+                    Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, color = Color.Black),
+                    singleLine = true
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(text = stringResource(R.string.password))
+
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, Color.Black),
+                    singleLine = true,
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            ImageVector.vectorResource(id = R.drawable.baseline_visibility_24)
+                        else ImageVector.vectorResource(id = R.drawable.baseline_visibility_off_24)
+                        val description =
+                            if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                R.string.show_password
+                            )
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(imageVector = image, description)
+                        }
+                    }
+                )
+                Spacer(Modifier.height(10.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = isChecked.value,
+                            onCheckedChange = { isChecked.value = it },
+                            enabled = true,
+                            modifier = Modifier
+                                .padding(0.dp)
+                        )
+                        Text(text = stringResource(R.string.keep_me_logged_in))
+                    }
+                    Text(text = stringResource(R.string.login_help))
+                }
+
+                Button(
+                    onClick = {
+
+
+                        viewModel.login(login = login, password = password, isChecked.value)
+
+
+                    }, Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
+                    shape = RoundedCornerShape(2.dp)
+                ) {
+                    Text(text = stringResource(R.string.login1), color = Color.White)
+                }
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Button(
+                            onClick = { /*TODO*/
+                            },
+                            Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
+                            shape = RoundedCornerShape(2.dp)
+                        ) {
+                            Text(text = stringResource(R.string.take_a_tour), color = Color.Black)
+                        }
+                        Spacer(Modifier.height(5.dp))
+                        ClickableText(text = AnnotatedString(stringResource(R.string.not_yet_customer_get_system)),
+                            onClick = {
+                                uriHandler.openUri(NEWUSER_URL)
+                            })
+                        Spacer(Modifier.height(5.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.bottom_logo),
+                            contentDescription = "bottom_logo",
+                            Modifier
+                                .height(30.dp)
+                                .fillMaxWidth(),
+                            alignment = Alignment.Center
+                        )
+                    }
                 }
             }
         }
     }
-    val toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
+
+
+    val toast = Toast.makeText(context, EMPTY_STRING, Toast.LENGTH_LONG)
 
     LaunchedEffect(Unit) {
         viewModel.result.collect { event ->
@@ -192,7 +205,7 @@ fun LoginPage(
                     toast.setText(event.resultText)
                     toast.show()
                     navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.Login.route) {inclusive = true}
+                        popUpTo(Routes.Login.route) { inclusive = true }
                     }
 
                 }
@@ -210,7 +223,6 @@ fun LoginPage(
                 else -> Unit
 
             }
-
         }
     }
 }

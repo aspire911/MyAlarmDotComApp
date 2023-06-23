@@ -1,43 +1,49 @@
 package com.mdmx.myalarmdotcomapp.viewmodel
 
 
-import com.mdmx.myalarmdotcomapp.model.MainRepository
-import com.mdmx.myalarmdotcomapp.testutil.TestDispatcherExtension
+import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
+import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.testutil.TestDispatcherProvider
 import com.mdmx.myalarmdotcomapp.testutil.TestResponse
+import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.LOGGEDIN
 import com.mdmx.myalarmdotcomapp.util.Constant.LOGGEDIN_FIELD
 import com.mdmx.myalarmdotcomapp.util.Constant.LOGIN_OK
 import com.mdmx.myalarmdotcomapp.util.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
 
-
+@ExperimentalCoroutinesApi
 class LoginViewModelTest {
 
-    @JvmField
-    @RegisterExtension
-    val testDispatcherExtension = TestDispatcherExtension()
+    private val testDispatchers: TestDispatcherProvider = TestDispatcherProvider()
+    private val apiRepository = mock<ApiRepository>()
+    private val spRepository = mock<SpRepository>()
 
-    private val repository = mock<MainRepository>()
-    private val dispatchers = testDispatcherExtension.testDispatchers
+
     private lateinit var viewModel: LoginViewModel
 
     @AfterEach
     fun afterEach() {
-        Mockito.reset(repository)
+        Mockito.reset(apiRepository)
+        Mockito.reset(spRepository)
+        Dispatchers.resetMain()
     }
 
     @BeforeEach
     fun beforeEach() {
-        this.viewModel = LoginViewModel(repository = repository, dispatchers = dispatchers)
-
+        this.viewModel = LoginViewModel(spRepository = spRepository, apiRepository = apiRepository, dispatchers = testDispatchers)
+        Dispatchers.setMain(testDispatchers.testDispatcher)
     }
 
     @Test
@@ -47,7 +53,7 @@ class LoginViewModelTest {
         val password = "Royal1234!"
         val testResponse = TestResponse(LOGGEDIN_FIELD, LOGGEDIN)
 
-        Mockito.`when`(repository.login(login = login, password = password))
+        Mockito.`when`(apiRepository.login(login = login, password = password))
             .thenReturn(Resource.Success(testResponse))
 
         viewModel.login(login, password)
@@ -62,9 +68,9 @@ class LoginViewModelTest {
     fun `login and password incorrect`() = runTest {
         val login = "Royal1234!"
         val password = "Royal1234!"
-        val testResponse = TestResponse(LOGGEDIN_FIELD, "")
+        val testResponse = TestResponse(LOGGEDIN_FIELD, EMPTY_STRING)
 
-        Mockito.`when`(repository.login(login = login, password = password))
+        Mockito.`when`(apiRepository.login(login = login, password = password))
             .thenReturn(Resource.Success(testResponse))
 
         viewModel.login(login, password)
@@ -78,10 +84,10 @@ class LoginViewModelTest {
     @Test
     fun `login and password empty`() = runTest {
 
-        val login = ""
-        val password = ""
+        val login = EMPTY_STRING
+        val password = EMPTY_STRING
 
-        Mockito.`when`(repository.login(login = login, password = password))
+        Mockito.`when`(apiRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
@@ -95,10 +101,10 @@ class LoginViewModelTest {
     @Test
     fun `login empty`() = runTest {
 
-        val login = ""
+        val login = EMPTY_STRING
         val password = "Royal1234!"
 
-        Mockito.`when`(repository.login(login = login, password = password))
+        Mockito.`when`(apiRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
@@ -114,9 +120,9 @@ class LoginViewModelTest {
     fun `password empty`() = runTest {
 
         val login = "Royal1234!"
-        val password = ""
+        val password = EMPTY_STRING
 
-        Mockito.`when`(repository.login(login = login, password = password))
+        Mockito.`when`(apiRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
