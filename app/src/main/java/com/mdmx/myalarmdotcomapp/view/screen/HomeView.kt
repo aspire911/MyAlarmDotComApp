@@ -1,6 +1,7 @@
 package com.mdmx.myalarmdotcomapp.view.screen
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -56,6 +58,7 @@ fun Home(
     val coroutineScope = rememberCoroutineScope()
     val refreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.updateSystemData() })
+    val configuration = LocalConfiguration.current
 
 
     LaunchedEffect(Unit){
@@ -103,7 +106,10 @@ fun Home(
                     Modifier
                         .fillMaxSize()
                         .background(Color.LightGray)
-
+                        .padding(
+                            horizontal = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 80.dp else 3.dp,
+                            vertical = 3.dp
+                        )
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
