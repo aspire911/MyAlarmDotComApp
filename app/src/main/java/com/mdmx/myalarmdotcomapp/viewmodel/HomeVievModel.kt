@@ -12,6 +12,9 @@ import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,18 +25,25 @@ class HomeViewModel @Inject constructor(
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
+
     private val _title = MutableLiveData(EMPTY_STRING)
     val title: LiveData<String> = _title
 
-    private val _state = MutableLiveData(0)
-    val state: LiveData<Int> = _state
+    private val _garageDoorState = MutableLiveData(0)
+    val garageDoorState: LiveData<Int> = _garageDoorState
 
     private val _logOut = MutableLiveData(false)
     val logOut: LiveData<Boolean> = _logOut
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     fun updateSystemData() {
         _logOut.value = false
+
         viewModelScope.launch(dispatchers.io) {
+            _isRefreshing.value = true
+           // delay(3000)
             val availableSystemItem = apiRepository.getAvailableSystemItem()
             val systemId = availableSystemItem?.data?.get(0)?.id
             if (systemId != null) {
@@ -45,10 +55,11 @@ class HomeViewModel @Inject constructor(
                     val garageData = apiRepository.getGarageDoorData(garageDoorId)
                     val garageState = garageData?.data?.attributes?.state
                     if (garageState != null) {
-                        _state.postValue(garageState)
-                    } else _state.postValue(NO_GARAGE_DOORS)
-                } else _state.postValue(NO_GARAGE_DOORS)
+                        _garageDoorState.postValue(garageState)
+                    } else _garageDoorState.postValue(NO_GARAGE_DOORS)
+                } else _garageDoorState.postValue(NO_GARAGE_DOORS)
             } else _title.postValue(ERROR)
+            _isRefreshing.value = false
         }
     }
     fun logOut() {
