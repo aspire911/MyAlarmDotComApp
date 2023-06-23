@@ -71,7 +71,7 @@ fun LoginPage(
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (isLoading) CircularProgressIndicator()
+
         viewModel.autoLogin()
         if (viewModel.autoLogin.value == false) {
             Column(
@@ -194,6 +194,7 @@ fun LoginPage(
                 }
             }
         }
+        if (isLoading) CircularProgressIndicator()
     }
 
 

@@ -20,6 +20,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +57,11 @@ fun Home(
     val refreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.updateSystemData() })
 
-    viewModel.updateSystemData()
+
+    LaunchedEffect(Unit){
+        viewModel.updateSystemData()
+    }
+
 
     viewModel.logOut.observe(LocalLifecycleOwner.current) {
         if (it) navController.navigate(Routes.Login.route) {
