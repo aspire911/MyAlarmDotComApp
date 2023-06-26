@@ -1,6 +1,6 @@
-package com.mdmx.myalarmdotcomapp.model.sprepository
+package com.mdmx.myalarmdotcomapp.model.localpersistentrepository
 
-interface SpRepository {
+interface LocalPersistentDataSource {
 
     fun setLoginData(login: String, password: String, autoLogin: Boolean = true)
 

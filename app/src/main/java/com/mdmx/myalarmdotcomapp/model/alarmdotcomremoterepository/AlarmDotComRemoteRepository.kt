@@ -1,4 +1,4 @@
-package com.mdmx.myalarmdotcomapp.model.apirepository
+package com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
@@ -33,11 +33,11 @@ import org.jsoup.select.Elements
 import java.io.IOException
 import javax.inject.Inject
 
-class DefaultApiRepository @Inject constructor(
+class AlarmDotComRemoteRepository @Inject constructor(
 
     private val gson: Gson
 
-    ) : ApiRepository {
+    ) : AlarmDotComRemoteDataSource {
 
 
     override suspend fun login(login: String, password: String): Resource<Connection.Response> {

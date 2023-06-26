@@ -1,8 +1,8 @@
 package com.mdmx.myalarmdotcomapp.viewmodel
 
 
-import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
-import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository.AlarmDotComRemoteDataSource
+import com.mdmx.myalarmdotcomapp.model.localpersistentrepository.LocalPersistentDataSource
 import com.mdmx.myalarmdotcomapp.testutil.TestDispatcherProvider
 import com.mdmx.myalarmdotcomapp.testutil.TestResponse
 import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
@@ -22,27 +22,28 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 class LoginViewModelTest {
 
     private val testDispatchers: TestDispatcherProvider = TestDispatcherProvider()
-    private val apiRepository = mock<ApiRepository>()
-    private val spRepository = mock<SpRepository>()
+    private val alarmDotComRemoteRepository = mock<AlarmDotComRemoteDataSource>()
+    private val localPersistentRepository = mock<LocalPersistentDataSource>()
 
 
     private lateinit var viewModel: LoginViewModel
 
     @AfterEach
     fun afterEach() {
-        Mockito.reset(apiRepository)
-        Mockito.reset(spRepository)
+        Mockito.reset(alarmDotComRemoteRepository)
+        Mockito.reset(localPersistentRepository)
         Dispatchers.resetMain()
     }
 
     @BeforeEach
     fun beforeEach() {
-        this.viewModel = LoginViewModel(spRepository = spRepository, apiRepository = apiRepository, dispatchers = testDispatchers)
+        this.viewModel = LoginViewModel(localPersistentRepository = localPersistentRepository, alarmDotComRemoteRepository = alarmDotComRemoteRepository, dispatchers = testDispatchers)
         Dispatchers.setMain(testDispatchers.testDispatcher)
     }
 
@@ -53,7 +54,7 @@ class LoginViewModelTest {
         val password = "Royal1234!"
         val testResponse = TestResponse(LOGGEDIN_FIELD, LOGGEDIN)
 
-        Mockito.`when`(apiRepository.login(login = login, password = password))
+        whenever(alarmDotComRemoteRepository.login(login = login, password = password))
             .thenReturn(Resource.Success(testResponse))
 
         viewModel.login(login, password)
@@ -70,7 +71,7 @@ class LoginViewModelTest {
         val password = "Royal1234!"
         val testResponse = TestResponse(LOGGEDIN_FIELD, EMPTY_STRING)
 
-        Mockito.`when`(apiRepository.login(login = login, password = password))
+        whenever(alarmDotComRemoteRepository.login(login = login, password = password))
             .thenReturn(Resource.Success(testResponse))
 
         viewModel.login(login, password)
@@ -87,7 +88,7 @@ class LoginViewModelTest {
         val login = EMPTY_STRING
         val password = EMPTY_STRING
 
-        Mockito.`when`(apiRepository.login(login = login, password = password))
+        whenever(alarmDotComRemoteRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
@@ -104,7 +105,7 @@ class LoginViewModelTest {
         val login = EMPTY_STRING
         val password = "Royal1234!"
 
-        Mockito.`when`(apiRepository.login(login = login, password = password))
+        whenever(alarmDotComRemoteRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
@@ -122,7 +123,7 @@ class LoginViewModelTest {
         val login = "Royal1234!"
         val password = EMPTY_STRING
 
-        Mockito.`when`(apiRepository.login(login = login, password = password))
+        whenever(alarmDotComRemoteRepository.login(login = login, password = password))
             .thenReturn(Resource.Error(ERROR))
 
         viewModel.login(login, password)
