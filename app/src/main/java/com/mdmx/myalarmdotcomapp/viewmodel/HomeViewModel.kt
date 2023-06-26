@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mdmx.myalarmdotcomapp.AlarmDotComApplication
-import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
-import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository.AlarmDotComRemoteDataSource
+import com.mdmx.myalarmdotcomapp.model.localpersistentrepository.LocalPersistentDataSource
 import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
@@ -19,8 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val spRepository: SpRepository,
-    private val apiRepository: ApiRepository,
+    private val localPersistentRepository: LocalPersistentDataSource,
+    private val alarmDotComRemoteRepository: AlarmDotComRemoteDataSource,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -43,15 +43,15 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch(dispatchers.io) {
             _isRefreshing.value = true
-            val availableSystemItem = apiRepository.getAvailableSystemItem()
+            val availableSystemItem = alarmDotComRemoteRepository.getAvailableSystemItem()
             val systemId = availableSystemItem?.data?.get(0)?.id
             if (systemId != null) {
-                val systemData = apiRepository.getSystemData(systemId)
+                val systemData = alarmDotComRemoteRepository.getSystemData(systemId)
                 val text = systemData?.data?.attributes?.description
                 val garageDoorId = systemData?.data?.relationships?.garageDoors?.data?.get(0)?.id
                 _title.postValue(text ?: ERROR)
                 if (garageDoorId != null) {
-                    val garageData = apiRepository.getGarageDoorData(garageDoorId)
+                    val garageData = alarmDotComRemoteRepository.getGarageDoorData(garageDoorId)
                     val garageState = garageData?.data?.attributes?.state
                     if (garageState != null) {
                         _garageDoorState.postValue(garageState)
@@ -62,7 +62,7 @@ class HomeViewModel @Inject constructor(
         }
     }
     fun logOut() {
-        spRepository.clearLoginData()
+        localPersistentRepository.clearLoginData()
         AlarmDotComApplication.cookies = mapOf()
         _logOut.value = true
     }

@@ -1,4 +1,4 @@
-package com.mdmx.myalarmdotcomapp.model.apirepository
+package com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository
 
 import com.mdmx.myalarmdotcomapp.data.garagestate.GarageState
 import com.mdmx.myalarmdotcomapp.data.systemdata.SystemData
@@ -6,7 +6,7 @@ import com.mdmx.myalarmdotcomapp.data.systemid.AvailableSystemItem
 import com.mdmx.myalarmdotcomapp.util.Resource
 import org.jsoup.Connection
 
-interface ApiRepository {
+interface AlarmDotComRemoteDataSource {
     suspend fun login(login: String, password: String): Resource<Connection.Response>
 
     suspend fun getJson(url: String): String

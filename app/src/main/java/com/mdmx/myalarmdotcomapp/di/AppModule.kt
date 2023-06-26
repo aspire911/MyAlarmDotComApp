@@ -5,11 +5,11 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.google.gson.Gson
-import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
+import com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository.AlarmDotComRemoteDataSource
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
-import com.mdmx.myalarmdotcomapp.model.apirepository.DefaultApiRepository
-import com.mdmx.myalarmdotcomapp.model.sprepository.DefaultSpRepository
-import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository.AlarmDotComRemoteRepository
+import com.mdmx.myalarmdotcomapp.model.localpersistentrepository.LocalPersistentRepository
+import com.mdmx.myalarmdotcomapp.model.localpersistentrepository.LocalPersistentDataSource
 import com.mdmx.myalarmdotcomapp.util.Constant.SECURE_PREFS
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideApiRepository(gson: Gson): ApiRepository = DefaultApiRepository(gson)
+    fun provideAlarmDotComRemoteDataSource(gson: Gson): AlarmDotComRemoteDataSource = AlarmDotComRemoteRepository(gson)
 
     @Singleton
     @Provides
@@ -49,7 +49,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideSpRepository(securePreferences: SharedPreferences): SpRepository = DefaultSpRepository(securePreferences)
+    fun provideLocalPersistentDataSource(securePreferences: SharedPreferences): LocalPersistentDataSource= LocalPersistentRepository(securePreferences)
 
     @Singleton
     @Provides

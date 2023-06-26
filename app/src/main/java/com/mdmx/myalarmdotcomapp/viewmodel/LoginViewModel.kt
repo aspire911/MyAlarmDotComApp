@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mdmx.myalarmdotcomapp.AlarmDotComApplication
-import com.mdmx.myalarmdotcomapp.model.apirepository.ApiRepository
-import com.mdmx.myalarmdotcomapp.model.sprepository.SpRepository
+import com.mdmx.myalarmdotcomapp.model.alarmdotcomremoterepository.AlarmDotComRemoteDataSource
+import com.mdmx.myalarmdotcomapp.model.localpersistentrepository.LocalPersistentDataSource
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.ERROR_LOGIN_PASS
 import com.mdmx.myalarmdotcomapp.util.Constant.LOGGEDIN
@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val spRepository: SpRepository,
-    private val apiRepository: ApiRepository,
+    private val localPersistentRepository: LocalPersistentDataSource,
+    private val alarmDotComRemoteRepository: AlarmDotComRemoteDataSource,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
 
@@ -51,7 +51,7 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch(dispatchers.io) {
             _result.value = LoginEvent.Loading
-            when (val loginResponse = apiRepository.login(login = login, password = password)) {
+            when (val loginResponse = alarmDotComRemoteRepository.login(login = login, password = password)) {
                 is Resource.Error<*> -> _result.value =
                     LoginEvent.Failure(ERROR)
 
@@ -59,7 +59,7 @@ class LoginViewModel @Inject constructor(
                     val loggedIn = loginResponse.data?.cookies()?.get(LOGGEDIN_FIELD)
                     if (loggedIn != null && loggedIn == LOGGEDIN) {
                         AlarmDotComApplication.cookies = loginResponse.data.cookies()
-                        if(autoLogin) spRepository.setLoginData(login, password)
+                        if(autoLogin) localPersistentRepository.setLoginData(login, password)
                         _result.value = LoginEvent.Success(LOGIN_OK)
                     } else {
                         _result.value = LoginEvent.Failure(ERROR)
@@ -71,8 +71,8 @@ class LoginViewModel @Inject constructor(
 
     fun autoLogin() {
         _result.value = LoginEvent.Empty
-        if(spRepository.autoLogin()) {
-            val loginData = spRepository.getLoginData()
+        if(localPersistentRepository.autoLogin()) {
+            val loginData = localPersistentRepository.getLoginData()
             val login = loginData[LOGIN_KEY]
             val password = loginData[PASSWORD_KEY]
             if(!login.isNullOrBlank() && !password.isNullOrBlank())

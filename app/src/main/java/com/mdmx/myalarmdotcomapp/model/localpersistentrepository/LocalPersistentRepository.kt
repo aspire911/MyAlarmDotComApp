@@ -1,4 +1,4 @@
-package com.mdmx.myalarmdotcomapp.model.sprepository
+package com.mdmx.myalarmdotcomapp.model.localpersistentrepository
 
 
 import android.content.SharedPreferences
@@ -8,9 +8,9 @@ import com.mdmx.myalarmdotcomapp.util.Constant.LOGIN_KEY
 import com.mdmx.myalarmdotcomapp.util.Constant.PASSWORD_KEY
 import javax.inject.Inject
 
-class DefaultSpRepository @Inject constructor(
+class LocalPersistentRepository @Inject constructor(
     private val securePreferences: SharedPreferences
-): SpRepository {
+): LocalPersistentDataSource {
 
     override fun autoLogin(): Boolean {
         return securePreferences.getBoolean(AUTOLOGIN_KEY, false)
