@@ -12,7 +12,6 @@ import com.mdmx.myalarmdotcomapp.util.Constant.ERROR
 import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
 import com.mdmx.myalarmdotcomapp.util.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -38,12 +37,12 @@ class HomeViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
+
     fun updateSystemData() {
         _logOut.value = false
 
         viewModelScope.launch(dispatchers.io) {
             _isRefreshing.value = true
-           // delay(3000)
             val availableSystemItem = apiRepository.getAvailableSystemItem()
             val systemId = availableSystemItem?.data?.get(0)?.id
             if (systemId != null) {

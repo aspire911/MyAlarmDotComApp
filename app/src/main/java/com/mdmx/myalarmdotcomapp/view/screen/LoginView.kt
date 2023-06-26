@@ -1,5 +1,6 @@
 package com.mdmx.myalarmdotcomapp.view.screen
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -69,14 +71,18 @@ fun LoginPage(
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     var isLoading by rememberSaveable { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (isLoading) CircularProgressIndicator()
+
         viewModel.autoLogin()
         if (viewModel.autoLogin.value == false) {
             Column(
                 Modifier
-                    .padding(16.dp)
+                    .padding(
+                        horizontal = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 80.dp else 16.dp,
+                        vertical = 16.dp
+                    )
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
             ) {
@@ -194,6 +200,7 @@ fun LoginPage(
                 }
             }
         }
+        if (isLoading) CircularProgressIndicator()
     }
 
 
@@ -210,7 +217,6 @@ fun LoginPage(
                     navController.navigate(Routes.Home.route) {
                         popUpTo(Routes.Login.route) { inclusive = true }
                     }
-
                 }
 
                 is LoginViewModel.LoginEvent.Failure -> {
