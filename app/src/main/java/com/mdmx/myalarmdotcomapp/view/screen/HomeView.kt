@@ -21,22 +21,17 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.mdmx.myalarmdotcomapp.data.DrawerEvents
-import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
-import com.mdmx.myalarmdotcomapp.util.Constant.NO_GARAGE_DOORS
 import com.mdmx.myalarmdotcomapp.view.Routes
 import com.mdmx.myalarmdotcomapp.view.screen.components.DrawerMenu
 import com.mdmx.myalarmdotcomapp.view.screen.components.GarageDoor
@@ -49,43 +44,26 @@ import kotlinx.coroutines.launch
 @Composable
 fun Home(
     navController: NavHostController,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    val title = rememberSaveable { mutableStateOf(EMPTY_STRING) }
-    val garageState = rememberSaveable { mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val refreshing by viewModel.isRefreshing.collectAsState()
-    val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.updateSystemData() })
+    val state by viewModel.state.collectAsState()
+
+    val pullRefreshState =
+        rememberPullRefreshState(state.isLoading, { viewModel.updateSystemData() })
     val configuration = LocalConfiguration.current
 
-
-    LaunchedEffect(Unit){
-        viewModel.updateSystemData()
-    }
-
-
-    viewModel.logOut.observe(LocalLifecycleOwner.current) {
-        if (it) navController.navigate(Routes.Login.route) {
-            popUpTo(Routes.Home.route) { inclusive = true }
-        }
-    }
-
-    viewModel.title.observe(LocalLifecycleOwner.current) {
-        title.value = it
-    }
-
-    viewModel.garageDoorState.observe(LocalLifecycleOwner.current) { state ->
-        if (state != NO_GARAGE_DOORS) garageState.value = true
+    if (state.isLogout) navController.navigate(Routes.Login.route) {
+        popUpTo(Routes.Home.route) { inclusive = true }
     }
 
     Column {
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = { TopBar(viewModel, title.value, scaffoldState = scaffoldState) },
+            topBar = { TopBar(viewModel, state.systemTitle, scaffoldState = scaffoldState) },
             drawerContent = {
-                DrawerMenu(title = title.value) { event ->
+                DrawerMenu(title = state.systemTitle) { event ->
                     when (event) {
                         is DrawerEvents.OnItemClick -> {
                         }
@@ -100,7 +78,7 @@ fun Home(
                 Modifier
                     .fillMaxSize()
                     .pullRefresh(pullRefreshState),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.TopCenter
             ) {
                 Column(
                     Modifier
@@ -115,9 +93,9 @@ fun Home(
                 ) {
 
 
-                    Text(text = title.value)
+                    Text(text = state.systemTitle)
 
-                    if (garageState.value) GarageDoor(viewModel)
+                    if (state.garageState != 0) GarageDoor(state.garageState)
 
                     Card(
                         border = BorderStroke(1.dp, Color.Gray),
@@ -129,10 +107,10 @@ fun Home(
 
                     }
                 }
-                if (refreshing)
-                    CircularProgressIndicator()
+                if (state.isLoading)
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
 //                PullRefreshIndicator(
-//                    refreshing = refreshing,
+//                    refreshing = state.isLoading,
 //                    state = pullRefreshState,
 //                )
             }

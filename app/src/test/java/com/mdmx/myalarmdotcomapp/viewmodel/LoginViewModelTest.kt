@@ -59,7 +59,7 @@ class LoginViewModelTest {
 
         viewModel.login(login, password)
 
-        val expected = LoginViewModel.LoginEvent.Success(LOGIN_OK).javaClass
+        val expected = LoginEvent.Success(LOGIN_OK).javaClass
         val actual = viewModel.result.value.javaClass
 
         Assertions.assertEquals(expected, actual)
@@ -76,7 +76,7 @@ class LoginViewModelTest {
 
         viewModel.login(login, password)
 
-        val expected = LoginViewModel.LoginEvent.Failure(ERROR).javaClass
+        val expected = LoginEvent.Failure(ERROR).javaClass
         val actual = viewModel.result.value.javaClass
 
         Assertions.assertEquals(expected, actual)
@@ -93,7 +93,7 @@ class LoginViewModelTest {
 
         viewModel.login(login, password)
 
-        val expected = LoginViewModel.LoginEvent.Failure(ERROR).javaClass
+        val expected = LoginEvent.Failure(ERROR).javaClass
         val actual = viewModel.result.value.javaClass
 
         Assertions.assertEquals(expected, actual)
@@ -110,7 +110,7 @@ class LoginViewModelTest {
 
         viewModel.login(login, password)
 
-        val expected = LoginViewModel.LoginEvent.Failure(ERROR).javaClass
+        val expected = LoginEvent.Failure(ERROR).javaClass
         val actual = viewModel.result.value.javaClass
 
         Assertions.assertEquals(expected, actual)
@@ -128,7 +128,7 @@ class LoginViewModelTest {
 
         viewModel.login(login, password)
 
-        val expected = LoginViewModel.LoginEvent.Failure(ERROR).javaClass
+        val expected = LoginEvent.Failure(ERROR).javaClass
         val actual = viewModel.result.value.javaClass
 
         Assertions.assertEquals(expected, actual)

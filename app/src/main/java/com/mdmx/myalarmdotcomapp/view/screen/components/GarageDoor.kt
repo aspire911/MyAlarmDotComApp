@@ -20,23 +20,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mdmx.myalarmdotcomapp.R
 import com.mdmx.myalarmdotcomapp.util.Constant.GARAGE_DOOR_OPEN1
 import com.mdmx.myalarmdotcomapp.util.Constant.GARAGE_DOOR_OPEN3
-import com.mdmx.myalarmdotcomapp.viewmodel.HomeViewModel
 
 
 @Composable
-fun GarageDoor(viewModel: HomeViewModel) {
+fun GarageDoor(garageState: Int) {
     var imgId by rememberSaveable { mutableIntStateOf(R.drawable.close_garage) }
 
-    viewModel.garageDoorState.observe(LocalLifecycleOwner.current) { state ->
-        imgId = if (state == GARAGE_DOOR_OPEN3 || state == GARAGE_DOOR_OPEN1) R.drawable.open_garage else R.drawable.close_garage
-    }
+    imgId =
+        if (garageState == GARAGE_DOOR_OPEN3 || garageState == GARAGE_DOOR_OPEN1) R.drawable.open_garage else R.drawable.close_garage
+
 
     Card(
         border = BorderStroke(1.dp, Color.Gray),
