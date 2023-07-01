@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.mdmx.myalarmdotcomapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.mdmx.myalarmdotcomapp"
         minSdk 25
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -67,6 +67,7 @@ dependencies {
     //Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.46.1'
     kapt 'com.google.dagger:hilt-compiler:2.46.1'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0-alpha01'
 
     // Activity KTX for viewModels()
     implementation "androidx.activity:activity-ktx:1.7.2"
@@ -88,7 +89,7 @@ dependencies {
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation "androidx.navigation:navigation-compose:2.7.0-beta01"
+    implementation "androidx.navigation:navigation-compose:2.7.0-beta02"
 
     testImplementation 'org.mockito:mockito-core:5.4.0'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.0.0'

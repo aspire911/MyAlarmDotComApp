@@ -56,12 +56,14 @@ import com.mdmx.myalarmdotcomapp.util.Constant.EMPTY_STRING
 import com.mdmx.myalarmdotcomapp.util.Constant.NEWUSER_URL
 import com.mdmx.myalarmdotcomapp.view.Routes
 import com.mdmx.myalarmdotcomapp.viewmodel.LoginViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.mdmx.myalarmdotcomapp.viewmodel.LoginEvent
 
 
 @Composable
 fun LoginPage(
     navController: NavHostController,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
 
     var password by rememberSaveable { mutableStateOf(EMPTY_STRING) }
@@ -210,7 +212,7 @@ fun LoginPage(
         viewModel.result.collect { event ->
             when (event) {
 
-                is LoginViewModel.LoginEvent.Success -> {
+                is LoginEvent.Success -> {
                     isLoading = false
                     toast.setText(event.resultText)
                     toast.show()
@@ -219,13 +221,13 @@ fun LoginPage(
                     }
                 }
 
-                is LoginViewModel.LoginEvent.Failure -> {
+                is LoginEvent.Failure -> {
                     isLoading = false
                     toast.setText(event.errorText)
                     toast.show()
                 }
 
-                is LoginViewModel.LoginEvent.Loading -> {
+                is LoginEvent.Loading -> {
                     isLoading = true
                 }
 
